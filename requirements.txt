@@ -1,3 +1,13 @@
 requests
 pandas
 python-dotenv
+xgboost
+scikit-learn
+matplotlib
+openpyxl
+pyarrow
+seaborn
+shortuuid
+gym
+stable-baselines3
+shimmy
