@@ -5,6 +5,9 @@ import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
+import torch
+print("✅ CUDA available:", torch.cuda.is_available())
+print("🖥️ Device:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU only")
 
 
 def extract_post_entry_window(entry_time, df_price, window=48):
