@@ -120,6 +120,7 @@ def run_backtest(df, min_bars_between_entries=3):
             entry_time = time
             last_entry_index = idx
 
+            max_price = df.loc[idx +  1: idx + min_bars_between_entries + 1, 'high'].max()
             # trade 기록
             tid = shortuuid.uuid()
             trade = {
@@ -128,6 +129,7 @@ def run_backtest(df, min_bars_between_entries=3):
                 "buy_price": buy_price,
                 "entry_steps": entry_step,
                 "position": position,
+                "max_price": max_price,
                 "volume_ratio": vratio,
                 **indicators_at_entry  # ⬅️ 지표 포함
             }
@@ -155,9 +157,9 @@ def run_backtest(df, min_bars_between_entries=3):
                         indicators_at_entry[f"disp{ma_window}_{tf_label}"] = latest.get(f"ma{ma_window}_disparity")
 
                 data = pd.DataFrame([indicators_at_entry])[FEATURE_COLS]  # 지표값을 DataFrame으로 변환
-                pred = model.predict(data.values).argmax()
-                if pred == 1:
-                    continue
+                # pred = model.predict(data.values).argmax()
+                # if pred == 1:
+                #     continue
 
                 additional_position = SEED / ENTRY_COUNT / price
                 cash -= additional_position * price
@@ -168,6 +170,8 @@ def run_backtest(df, min_bars_between_entries=3):
                 entries.append((time, price))
                 last_entry_index = idx  # 분할매수 인덱스 갱신
 
+                max_price = df.loc[idx + 1: idx + min_bars_between_entries + 1, 'high'].max()
+
                 # trade 기록
                 trade = {
                     "tid": tid,
@@ -175,6 +179,7 @@ def run_backtest(df, min_bars_between_entries=3):
                     "buy_price": buy_price,
                     "entry_steps": entry_step,
                     "position": position,
+                    "max_price": max_price,
                     "volume_ratio": vratio,
                     **indicators_at_entry  # ⬅️ 지표 포함
                 }
